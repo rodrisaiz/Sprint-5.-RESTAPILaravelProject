@@ -47,7 +47,14 @@ class UserController extends Controller
     {
     
         $user=User::find($id);
-        $user->update($request->all());
+
+        if (!$request->username == null){
+
+            $user->username = $request->username;
+        
+            $user->save();
+        }
+
         return $user;
 
     }
