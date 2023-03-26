@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('total_games')->nullable();
             $table->integer('total_wins')->nullable();
+            $table->integer('winning_percentage')->nullable(); 
             $table->rememberToken();
             $table->timestamps();
         });
