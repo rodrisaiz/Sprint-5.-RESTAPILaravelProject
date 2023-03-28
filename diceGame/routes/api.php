@@ -8,20 +8,19 @@ use Illuminate\Support\Facades\Route;
 Route::post('/player/register', [UserController::class, 'register']);
 Route::post('/player/login', [UserController::class, 'login']);
 Route::get('/players', [UserController::class, 'index']);
+Route::get('/players/ranking', [GameController::class, 'rank']);
+
 
 Route::group(['middleware' => ['auth:api']], function () {
 
-    
     Route::get('/players/{id}', [UserController::class, 'show']);
     Route::put('/players/{id}', [UserController::class, 'update']);
     Route::delete('/player/{id}', [UserController::class, 'destroy']);
 
     Route::post('/players/{id}/games', [GameController::class, 'roll']);
     Route::delete('/players/{id}/games', [GameController::class, 'destroy']);
-    Route::get('/players/ranking', [GameController::class, 'rank']);
     Route::get('/players/ranking/loser', [GameController::class, 'rank_loser']);
     Route::get('/players/ranking/winner', [GameController::class, 'rank_winner']);
-
 
 });
 
