@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+//use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -60,6 +61,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
+
+        if($user->admin_roll == 'Admin' || $user->id == $id)
+        {
 
        $request->validate([
             
@@ -69,6 +74,14 @@ class UserController extends Controller
         ]);
 
         return User::create($request->all());
+
+        }else{
+                    
+            return response([
+                'error_message' => "Sorry! You don't have access"
+            ], 401 );
+
+        }
     }
 
     /**
@@ -76,13 +89,23 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        
+        $user = auth()->user();
+
+        if($user->admin_roll == 'Admin' || $user->id == $id)
+        {
+
             return User::find($id);
 
-    }
+        }else{
 
-        
-    
+            return response([
+                'error_message' => "Sorry! You don't have access"
+            ], 401 );
+
+        }
+
+      
+    }
 
     /**
      * Update the specified resource in storage.
@@ -91,24 +114,51 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
     
-        $user=User::find($id);
+        $user = auth()->user();
 
-        if (!$request->username == null){
+        if($user->admin_roll == 'Admin' || $user->id == $id)
+        {
 
-            $user->username = $request->username;
-        
-            $user->save();
+            $user=User::find($id);
+
+                if (!$request->username == null){
+
+                    $user->username = $request->username;
+                
+                    $user->save();
+                }
+
+            return $user;
+
+        }else{
+            
+            return response([
+                'error_message' => "Sorry! You don't have access"
+            ], 401 );
+
         }
-
-        return $user;
-
     }
+
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
+        $user = auth()->user();
+
+        if($user->admin_roll == 'Admin' || $user->id == $id)
+        {
+
         return User::destroy($id);
+
+        }else{
+                
+            return response([
+                'error_message' => "Sorry! You don't have access"
+            ], 401 );
+
+        }
     }
 }
