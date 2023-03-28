@@ -3,10 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResources;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'username' => '',
+            'email' => 'required|email|unique:users',
+            'email_verified_at' => 'required',
+            'password' => 'required',
+            'admin_roll' => '',
+        ]);
+
+        $data['password'] = bcrypt($request->password);
+
+        $user = User::create($data);
+
+        $token = $user->createToken('API Token')->accessToken;
+
+        return response([ 'user' => $user, 'token' => $token]);
+    }
+
+    public function login(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'email|required',
+            'password' => 'required'
+        ]);
+
+        if (!auth()->attempt($data)) {
+            return response(['error_message' => 'Incorrect Details. 
+            Please try again']);
+        }
+
+        $token = auth()->user()->createToken('API Token')->accessToken;
+
+        return response(['user' => auth()->user(), 'token' => $token]);
+
+    }
+    
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +63,7 @@ class UserController extends Controller
 
        $request->validate([
             
-            'email' => 'required',
+            'email' => 'required|email',
             'email_verified_at' => 'required',
             'password' => 'required'
         ]);
@@ -36,8 +76,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return User::find($id);
+        
+            return User::find($id);
+
     }
+
+        
+    
 
     /**
      * Update the specified resource in storage.
