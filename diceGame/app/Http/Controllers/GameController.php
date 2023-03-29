@@ -17,9 +17,7 @@ class GameController extends Controller
         {
 
                 $user = User::find($id);
-                //totla game
-                //total wins 
-                
+                 
                 $dice = rand(1,5) + rand(1,5);
 
                 if($dice == 7){
@@ -52,6 +50,7 @@ class GameController extends Controller
             ], 401 );
 
         }
+        
     }
 
 

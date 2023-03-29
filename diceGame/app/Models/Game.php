@@ -14,4 +14,17 @@ class Game extends Model
         'result'
     ];
 
+    public function user()
+    {
+
+        return $this->hasOne(User::class);
+ 
+
+    }
+
+    public function player_id()
+    {
+        return $this->belongsTo(User::class, 'id');
+    }
+
 }
