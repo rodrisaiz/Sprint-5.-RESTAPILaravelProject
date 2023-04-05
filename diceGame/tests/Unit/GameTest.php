@@ -11,27 +11,15 @@ use Laravel\Passport\Passport;
 
 class GameTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     */
+    //Testing all the game routes
 
 
-     //Route::post('/players/{id}/games', [GameController::class, 'roll']);
+     //Testing -> Route::post('/players/{id}/games', [GameController::class, 'roll']);
 
         public function test_roll_dice_admin():void
         {
 
-        
-
-            //$token = User::find(3)->createToken('API Token')->accessToken;
-
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
+            // Validation admin 
             Passport::actingAs(
 
                 User::factory()->create([
@@ -47,7 +35,7 @@ class GameTest extends TestCase
                 ['create-servers']
                 );
 
-         
+            // Data needed for the test
             for($i = 0; $i <= 5; $i++){
 
                 User::factory()->create([
@@ -68,12 +56,13 @@ class GameTest extends TestCase
 
             $user = User::orderBy('id', 'desc')->get()->first();
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->postJson("api/players/{$user->id}/games");
     
             $response->assertStatus(201);
 
+            //Restoring of DB
 
             for($i = 0; $i <= 6; $i++){
 
@@ -90,22 +79,15 @@ class GameTest extends TestCase
 
         }
 
+
+
+        
         public function test_roll_dice_valid_user():void
         {
 
-        
 
-            //$token = User::find(3)->createToken('API Token')->accessToken;
+            // Data needed for the test 
 
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
-        
-         
             for($i = 0; $i <= 5; $i++){
 
                 User::factory()->create([
@@ -124,6 +106,8 @@ class GameTest extends TestCase
 
             }
 
+            // Validation user 
+
             Passport::actingAs(
 
                 User::factory()->create([
@@ -141,12 +125,13 @@ class GameTest extends TestCase
 
             $user = User::orderBy('id', 'desc')->get()->first();
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->postJson("api/players/{$user->id}/games");
     
             $response->assertStatus(201);
 
+            //Restoring of DB
 
             for($i = 0; $i <= 6; $i++){
 
@@ -166,17 +151,7 @@ class GameTest extends TestCase
         public function test_roll_dice_invalid_user():void
         {
 
-        
-
-            //$token = User::find(3)->createToken('API Token')->accessToken;
-
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
+            // Creating of invalid user
 
             Passport::actingAs(
 
@@ -193,6 +168,7 @@ class GameTest extends TestCase
                 ['create-servers']
                 );
         
+            // Data needed for the test 
          
             for($i = 0; $i <= 5; $i++){
 
@@ -216,12 +192,14 @@ class GameTest extends TestCase
 
             $user = User::orderBy('id', 'desc')->get()->first();
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->postJson("api/players/{$user->id}/games");
     
             $response->assertStatus(401);
 
+
+            //Restoring of DB
 
             for($i = 0; $i <= 6; $i++){
 
@@ -240,21 +218,8 @@ class GameTest extends TestCase
 
         public function test_roll_dice_invalid_acces():void
         {
-
-        
-
-            //$token = User::find(3)->createToken('API Token')->accessToken;
-
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
-
-        
-        
+           
+            // Data needed for the test
          
             for($i = 0; $i <= 5; $i++){
 
@@ -278,12 +243,13 @@ class GameTest extends TestCase
 
             $user = User::orderBy('id', 'desc')->get()->first();
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->postJson("api/players/24/games");
     
             $response->assertStatus(401);
 
+            //Restoring of DB
 
             for($i = 0; $i <= 5; $i++){
 
@@ -300,25 +266,15 @@ class GameTest extends TestCase
 
         }
 
-        //Route::delete('/players/{id}/games', [GameController::class, 'destroy']);
+        //Testing -> Route::delete('/players/{id}/games', [GameController::class, 'destroy']);
 
 
         public function test_delete_game_admin():void
         {
 
-        
 
-            //$token = User::find(3)->createToken('API Token')->accessToken;
+            // Data needed for the test 
 
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
-
-        
             for($i = 0; $i <= 5; $i++){
 
                 User::factory()->create([
@@ -348,10 +304,11 @@ class GameTest extends TestCase
 
             }
 
-        
 
             $user = User::orderBy('id', 'desc')->get()->first();
 
+
+            // Validation Admin
 
             Passport::actingAs(
 
@@ -369,13 +326,14 @@ class GameTest extends TestCase
                 );
          
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->deleteJson("api/players/{$user->id}/games");
     
             $response->assertStatus(200);
-            
 
+
+            //Restoring of DB
 
             for($i = 0; $i <= 6; $i++){
 
@@ -395,19 +353,8 @@ class GameTest extends TestCase
         public function test_delete_game_invalid_user():void
         {
 
-        
+            // Data needed for the test
 
-            //$token = User::find(3)->createToken('API Token')->accessToken;
-
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
-
-        
             for($i = 0; $i <= 5; $i++){
 
                 User::factory()->create([
@@ -442,6 +389,8 @@ class GameTest extends TestCase
             $user = User::orderBy('id', 'desc')->get()->first();
 
 
+            // Validation user
+
             Passport::actingAs(
 
                 User::factory()->create([
@@ -458,13 +407,14 @@ class GameTest extends TestCase
                 );
          
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->deleteJson("api/players/{$user->id}/games");
     
             $response->assertStatus(401);
             
 
+            //Restoring of DB
 
             for($i = 0; $i <= 6; $i++){
 
@@ -485,18 +435,8 @@ class GameTest extends TestCase
         {
 
         
+            // Data needed for the test 
 
-            //$token = User::find(3)->createToken('API Token')->accessToken;
-
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
-
-        
             for($i = 0; $i <= 5; $i++){
 
                 User::factory()->create([
@@ -524,6 +464,7 @@ class GameTest extends TestCase
 
             }
 
+            // Validation user
 
             Passport::actingAs(
 
@@ -543,13 +484,14 @@ class GameTest extends TestCase
                 $user = User::orderBy('id', 'desc')->get()->first();
          
          
-            //$response = $this->post('/api/create-server');
+            //Test
 
             $response = $this->deleteJson("api/players/{$user->id}/games");
     
             $response->assertStatus(200);
             
 
+            //Restoring of DB
 
             for($i = 0; $i <= 6; $i++){
 
@@ -570,18 +512,7 @@ class GameTest extends TestCase
         public function test_delete_game_invalid_acces():void
         {
 
-        
-
-            //$token = User::find(3)->createToken('API Token')->accessToken;
-
-
-    
-            //$user = User::create($data);
-    
-            //$token = $user->createToken('API Token')->accessToken;
-
-            //$user2 = [ 'user' => $user, 'token' => $token];
-
+            // Data needed for the test
         
             for($i = 0; $i <= 5; $i++){
 
@@ -614,13 +545,14 @@ class GameTest extends TestCase
             $user = User::orderBy('id', 'desc')->get()->first();
          
          
-            //$response = $this->post('/api/create-server');
+            //$Test
 
             $response = $this->deleteJson("api/players/{$user->id}/games");
     
             $response->assertStatus(401);
             
 
+            //Restoring of DB
 
             for($i = 0; $i <= 5; $i++){
 
@@ -637,12 +569,5 @@ class GameTest extends TestCase
 
         }
 
-
-    /*
-
-    --Route::post('/players/{id}/games', [GameController::class, 'roll']);
-    --Route::delete('/players/{id}/games', [GameController::class, 'destroy']);
-
-    */
    
 }
