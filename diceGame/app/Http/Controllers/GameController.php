@@ -91,25 +91,6 @@ class GameController extends Controller
     }
 
 
-    public function rank_loser()
-    {
-
-        $player = User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
-      
-        return $player;
-
-    }
-
-
-    public function rank_winner()
-    {
-
-        $player = User::orderBy('winning_percentage', 'desc')->get()->first();
-      
-        return $player;
-
-    }
-
 }
 
 ?>

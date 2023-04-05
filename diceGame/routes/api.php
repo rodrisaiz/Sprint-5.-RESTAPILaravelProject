@@ -16,11 +16,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/players/{id}', [UserController::class, 'show']);
     Route::put('/players/{id}', [UserController::class, 'update']);
     Route::delete('/player/{id}', [UserController::class, 'destroy']);
+    
+    Route::get('/players/ranking/loser', [UserController::class, 'rank_loser']);
+    Route::get('/players/ranking/winner', [UserController::class, 'rank_winner']);
 
     Route::post('/players/{id}/games', [GameController::class, 'roll']);
     Route::delete('/players/{id}/games', [GameController::class, 'destroy']);
-    Route::get('/players/ranking/loser', [GameController::class, 'rank_loser']);
-    Route::get('/players/ranking/winner', [GameController::class, 'rank_winner']);
 
 });
 

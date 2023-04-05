@@ -39,12 +39,14 @@ class UserController extends Controller
 
         if (!auth()->attempt($data)) {
             return response(['error_message' => 'Incorrect Details. 
-            Please try again']);
+            Please try again'], 422);
         }
+
 
         $token = auth()->user()->createToken('API Token')->accessToken;
 
-        return response(['user' => auth()->user(), 'token' => $token]);
+        return response(['user' => auth()->user(), 'token' => $token],);
+
 
     }
     
@@ -79,7 +81,7 @@ class UserController extends Controller
                     
             return response([
                 'error_message' => "Sorry! You don't have access"
-            ], 401 );
+            ], 401);
 
         }
     }
@@ -114,6 +116,12 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
     
+        $request->validate([
+            
+            'username' => 'required',
+        
+        ]);
+
         $user = auth()->user();
 
         if($user->admin_roll == 'Admin' || $user->id == $id)
@@ -121,11 +129,18 @@ class UserController extends Controller
 
             $user=User::find($id);
 
-                if (!$request->username == null){
+                if (isset($user->username)){
 
                     $user->username = $request->username;
                 
                     $user->save();
+
+                }else{
+            
+                    return response([
+                        'error_message' => "Sorry! The user don't exist"
+                    ], 405);
+        
                 }
 
             return $user;
@@ -148,11 +163,19 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        $player = User::find($id);
+
+        if(($user->admin_roll == 'Admin' || $user->id == $id) && isset($player->id))
         {
 
-        return User::destroy($id);
+            return response([User::destroy($id)], 200);
 
+        }elseif(!isset($player->id)) {
+
+            return response([
+                'error_message' => "Sorry! The user don't exist"
+            ], 405);
+            
         }else{
                 
             return response([
@@ -161,4 +184,25 @@ class UserController extends Controller
 
         }
     }
+
+
+    public function rank_loser()
+    {
+
+        $player = User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
+      
+        return $player;
+
+    }
+
+
+    public function rank_winner()
+    {
+
+        $player = User::orderBy('winning_percentage', 'desc')->get()->first();
+      
+        return $player;
+
+    }
+
 }
