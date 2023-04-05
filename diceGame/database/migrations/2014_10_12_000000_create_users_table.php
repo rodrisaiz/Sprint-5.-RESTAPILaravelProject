@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('username')->default('Anonimo');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('email_verified_at')->now();
             $table->string('password');
             $table->integer('total_games')->nullable();
             $table->integer('total_wins')->nullable();

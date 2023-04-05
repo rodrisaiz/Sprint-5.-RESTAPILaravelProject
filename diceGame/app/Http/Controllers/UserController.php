@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
+    
     public function register(Request $request)
     {
         $data = $request->validate([
             'username' => '',
             'email' => 'required|email|unique:users',
-            'email_verified_at' => 'required',
             'password' => 'required',
             'admin_roll' => '',
         ]);
@@ -30,12 +31,15 @@ class UserController extends Controller
         return response([ 'user' => $user, 'token' => $token]);
     }
 
+
+
     public function login(Request $request)
     {
         $data = $request->validate([
             'email' => 'email|required',
             'password' => 'required'
         ]);
+
 
         if (!auth()->attempt($data)) {
             return response(['error_message' => 'Incorrect Details. 
@@ -50,17 +54,14 @@ class UserController extends Controller
 
     }
     
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         return User::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
+
     public function store(Request $request)
     {
         $user = auth()->user();
@@ -68,14 +69,13 @@ class UserController extends Controller
         if($user->admin_roll == 'Admin' || $user->id == $id)
         {
 
-       $request->validate([
+        $request->validate([
+                
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
             
-            'email' => 'required|email',
-            'email_verified_at' => 'required',
-            'password' => 'required'
-        ]);
-
-        return User::create($request->all());
+            return User::create($request->all());
 
         }else{
                     
@@ -86,9 +86,9 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+   
+
+    
     public function show($id)
     {
         $user = auth()->user();
@@ -105,14 +105,12 @@ class UserController extends Controller
             ], 401 );
 
         }
-
-      
     }
 
-    /**
-     * Update the specified resource in storage.
-     * 
-     */
+    
+
+
+
     public function update(Request $request, $id)
     {
     
@@ -156,9 +154,6 @@ class UserController extends Controller
 
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $user = auth()->user();
@@ -186,6 +181,19 @@ class UserController extends Controller
     }
 
 
+
+
+    public function rank()
+    {
+        $players = User::orderBy('winning_percentage','desc')->get();
+
+        return $players;
+
+    }
+
+
+
+
     public function rank_loser()
     {
 
@@ -195,6 +203,9 @@ class UserController extends Controller
 
     }
 
+
+
+    
 
     public function rank_winner()
     {

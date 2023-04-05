@@ -54,6 +54,9 @@ class GameController extends Controller
     }
 
 
+
+
+
     public function destroy($id)
     {
         $user = auth()->user();
@@ -77,17 +80,6 @@ class GameController extends Controller
             ], 401 );
 
         }
-    
-    }
-
-
-    public function rank()
-    {
-        $players = User::orderBy('winning_percentage','desc')->get();
-      
-
-        return $players;
-
     }
 
 
