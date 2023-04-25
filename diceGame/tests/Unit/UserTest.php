@@ -426,10 +426,14 @@ class UserTest extends TestCase
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->getJson('api/players/5');
+        $response = $this->getJson("api/players/{$id}");
 
     
         $response->assertStatus(200);
@@ -467,10 +471,14 @@ class UserTest extends TestCase
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->getJson('api/players/5');
+        $response = $this->getJson("api/players/{$id}");
 
     
         $response->assertStatus(401);
@@ -531,17 +539,21 @@ class UserTest extends TestCase
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->putJson('api/players/5', $user);
+        $response = $this->putJson("api/players/{$id}", $user);
 
     
         $response->assertStatus(405);
 
         //Restoring of DB
 
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
+       
         
         User::destroy($userCreated->id);
 
@@ -582,9 +594,13 @@ class UserTest extends TestCase
             ['create-servers']
         );
         
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
+
         //Test
 
-        $response = $this->putJson('api/players/3', $user);
+        $response = $this->putJson("api/players/{$id}", $user);
 
     
         $response->assertStatus(401);
@@ -699,17 +715,18 @@ class UserTest extends TestCase
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
         
+        $id = $userCreated->id + 2;
         //Test
 
-        $response = $this->deleteJson('api/player/1');
+        $response = $this->deleteJson("api/player/{$id}");
 
     
         $response->assertStatus(405);
 
          //Restoring of DB
-
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
         
         User::destroy($userCreated->id);
 
@@ -741,17 +758,19 @@ class UserTest extends TestCase
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+        
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->deleteJson('api/player/5');
+        $response = $this->deleteJson("api/player/{$id}");
 
     
-        $response->assertStatus(405);
+        $response->assertStatus(401);
 
         //Restoring of DB
-
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
         
         User::destroy($userCreated->id);
 

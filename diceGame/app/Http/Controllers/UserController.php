@@ -160,17 +160,18 @@ class UserController extends Controller
 
         $player = User::find($id);
 
-        if(($user->admin_roll == 'Admin' || $user->id == $id) && isset($player->id))
+        if(($user->admin_roll == 'Admin' || $user->id == $id))
         {
 
-            return response([User::destroy($id)], 200);
+            if(isset($player->id)){
+                return response([User::destroy($id)], 200);
 
-        }elseif(!isset($player->id)) {
+            }elseif(!isset($player->id)) {
 
-            return response([
-                'error_message' => "Sorry! The user don't exist"
-            ], 405);
-            
+                return response([
+                    'error_message' => "Sorry! The user don't exist"
+                ], 405);
+            }
         }else{
                 
             return response([
