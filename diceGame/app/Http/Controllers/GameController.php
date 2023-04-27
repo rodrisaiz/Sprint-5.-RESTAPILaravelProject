@@ -13,7 +13,7 @@ class GameController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
                 $user = User::find($id);
@@ -61,7 +61,7 @@ class GameController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
             foreach(Game::all() as $game){
