@@ -57,7 +57,19 @@ class UserController extends Controller
     
     public function index()
     {
-        return User::all();
+        $user = auth()->user();
+        
+        if($user->admin_role == 'Admin' || $user->id == $id)
+        {
+            return User::all();
+
+        }else{
+                    
+            return response([
+                'error_message' => "Sorry! You don't have access"
+            ], 401);
+
+        }
     }
 
     
@@ -106,9 +118,6 @@ class UserController extends Controller
 
         }
     }
-
-    
-
 
 
     public function update(Request $request, $id)
@@ -164,6 +173,7 @@ class UserController extends Controller
         {
 
             if(isset($player->id)){
+
                 return response([User::destroy($id)], 200);
 
             }elseif(!isset($player->id)) {

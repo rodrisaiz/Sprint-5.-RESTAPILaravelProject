@@ -14,7 +14,7 @@ class UserTest extends TestCase
     //Testing all the user routes
 
    
-    //Testing -> Route::post('/player/register', [UserController::class, 'register']);
+    //Testing -> Route::post('/players/register', [UserController::class, 'register']);
 
 
     public function test_register_valid_form():void
@@ -34,7 +34,7 @@ class UserTest extends TestCase
 
         // Test 
 
-        $response = $this->postJson('api/player/register', $user);
+        $response = $this->postJson('api/players/register', $user);
 
         $response->assertStatus(200);
 
@@ -71,7 +71,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/player/register',$user);
+        $response = $this->postJson('api/players/register',$user);
 
         $response->assertStatus(422);
         
@@ -99,7 +99,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/player/register',$user);
+        $response = $this->postJson('api/players/register',$user);
 
      
         $response->assertStatus(422);
@@ -118,7 +118,7 @@ class UserTest extends TestCase
     }
     
 
-    //Testing -> Route::post('/player/login', [UserController::class, 'login']);
+    //Testing -> Route::post('/players/login', [UserController::class, 'login']);
 
     public function test_login_valid():void
     {
@@ -145,7 +145,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/player/login', $user2);
+        $response = $this->postJson('api/players/login', $user2);
 
  
         $response->assertStatus(200);
@@ -183,7 +183,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/player/login',$user);
+        $response = $this->postJson('api/players/login',$user);
 
         $response->assertStatus(422);
 
@@ -208,7 +208,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/player/login',$user);
+        $response = $this->postJson('api/players/login',$user);
 
         $response->assertStatus(422);
 
@@ -224,7 +224,7 @@ class UserTest extends TestCase
 
         $response = $this->getJson('api/players');
     
-        $response->assertStatus(200);
+        $response->assertStatus(401);
 
     }
 
@@ -235,15 +235,39 @@ class UserTest extends TestCase
 
         // Data needed for the test
 
-        $user = [
-            'username' =>  "Rodri",
-            'email' => 'user@user.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('1234'),
-            'admin_role' => 'Admin',
-        ];
+        
+        for($i = 0; $i <= 5; $i++){
 
-        User::factory()->create($user);
+            User::factory()->create([
+
+            
+                'username' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'email_verified_at' => now(),
+                'password' => bcrypt('1234'),
+                'admin_role' => 'Admin',
+                'total_games' => 80,
+                'total_wins' => 30,
+                'winning_percentage' => 26,
+    
+            ]);
+
+        }
+
+        Passport::actingAs(
+
+            User::factory()->create([
+
+                'username' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'email_verified_at' => now(),
+                'password' => bcrypt('1234'),
+                'admin_role' => 'Admin',
+    
+    
+            ]),
+            ['create-servers']
+        );
 
         //Test
 
@@ -253,9 +277,13 @@ class UserTest extends TestCase
 
         //Restoring of DB
 
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
+        for($i = 0; $i <= 5; $i++){
+
+            $userCreated = User::orderBy('id', 'desc')->get()->first();
             
-        User::destroy($userCreated->id);
+            User::destroy($userCreated->id);
+
+        }
 
         $response= $this->assertDatabaseMissing('users',[
             
@@ -269,6 +297,7 @@ class UserTest extends TestCase
 
     public function test_rank_all_the_players_no_data():void
     {
+        
 
     //Test
 
@@ -320,23 +349,19 @@ class UserTest extends TestCase
 
         //Restoring of DB
 
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
+      
+           
+        for($i = 0; $i <= 1; $i++){
+
+            $userCreated = User::orderBy('id', 'desc')->get()->first();
             
-        User::destroy($userCreated->id);
+            User::destroy($userCreated->id);
+
+        }
 
         $response= $this->assertDatabaseMissing('users',[
             
         'id' => $userCreated->id ]);
-        
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
-            
-        User::destroy($userCreated->id);
-
-        $response= $this->assertDatabaseMissing('users',[
-            
-        'id' => $userCreated->id ]);
-        
-    
 
     }
 
@@ -699,7 +724,7 @@ class UserTest extends TestCase
 
     }
 
-    //Testing -> Route::delete('/player/{id}', [UserController::class, 'destroy']);
+    //Testing -> Route::delete('/players/{id}', [UserController::class, 'destroy']);
 
     public function test_delete_an_specific_player_that_don´t_exist_admin_roll():void
     {
@@ -726,7 +751,7 @@ class UserTest extends TestCase
         $id = $userCreated->id + 2;
         //Test
 
-        $response = $this->deleteJson("api/player/{$id}");
+        $response = $this->deleteJson("api/players/{$id}");
 
     
         $response->assertStatus(405);
@@ -770,7 +795,7 @@ class UserTest extends TestCase
         
         //Test
 
-        $response = $this->deleteJson("api/player/{$id}");
+        $response = $this->deleteJson("api/players/{$id}");
 
     
         $response->assertStatus(401);
@@ -835,7 +860,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->deleteJson("api/player/{$user->id}");
+        $response = $this->deleteJson("api/players/{$user->id}");
 
     
         $response->assertStatus(200);

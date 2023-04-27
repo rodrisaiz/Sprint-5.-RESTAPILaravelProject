@@ -568,5 +568,241 @@ class GameTest extends TestCase
 
         }
 
+/*
+test nuevos
+*/
+
+        public function test_get_all_the_games_from_an_speciific_player_invalid_acces():void
+        {
+
+            // Data needed for the test
+        
+            for($i = 0; $i <= 4; $i++){
+
+                User::factory()->create([
+
+                
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'User',
+                    'total_games' => fake()->numberBetween(1,100),
+                    'total_wins' => fake()->numberBetween(1,50),
+                    'winning_percentage' => fake()->numberBetween(1,50),
+        
+                ]);
+
+            }
+
+                $user = User::orderBy('id', 'desc')->get()->first();
+
+                for($i = 0; $i <= 5; $i++){
+
+                    Game::factory()->create([
+
+                        'player_id' =>  $user->id,
+                        'result' => fake()->numberBetween(1,12),  
+            
+                    ]);
+
+                }
+
+            
+
+
+            $test_user = User::orderBy('id', 'desc')->get()->first();
+         
+         
+            //$Test
+
+            $response = $this->getJson("api/players/{$test_user->id}/games");
+    
+            $response->assertStatus(401);
+            
+
+            //Restoring of DB
+
+            for($i = 0; $i <= 4; $i++){
+
+                $userCreated = User::orderBy('id', 'desc')->get()->first();
+                
+                User::destroy($userCreated->id);
+    
+            }
+    
+            $response= $this->assertDatabaseMissing('users',[
+                
+            'id' => $userCreated->id ]);
+
+        }
+
+
+        public function test_get_all_the_games_from_an_speciific_player_valid_acces():void
+        {
+
+            // Data needed for the test
+        
+            for($i = 0; $i <= 4; $i++){
+
+                User::factory()->create([
+
+                
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'User',
+                    'total_games' => fake()->numberBetween(1,100),
+                    'total_wins' => fake()->numberBetween(1,50),
+                    'winning_percentage' => fake()->numberBetween(1,50),
+        
+                ]);
+
+            }
+
+                $user = User::orderBy('id', 'desc')->get()->first();
+
+                for($i = 0; $i <= 5; $i++){
+
+                    Game::factory()->create([
+
+                        'player_id' =>  $user->id,
+                        'result' => fake()->numberBetween(1,12),  
+            
+                    ]);
+
+                }
+
+            
+
+
+            $test_user = User::orderBy('id', 'desc')->get()->first();
+         
+
+            Passport::actingAs(
+
+                User::factory()->create([
+
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'Admin',
+        
+        
+                ]),
+                ['create-servers']
+                );
+
+         
+            //$Test
+
+            $response = $this->getJson("api/players/{$test_user->id}/games");
+    
+            $response->assertStatus(200);
+            
+
+            //Restoring of DB
+
+            for($i = 0; $i <= 5; $i++){
+
+                $userCreated = User::orderBy('id', 'desc')->get()->first();
+                
+                User::destroy($userCreated->id);
+    
+            }
+    
+            $response= $this->assertDatabaseMissing('users',[
+                
+            'id' => $userCreated->id ]);
+
+        }
+
+
+        public function test_get_all_the_games_from_an_unexisting_player_valid_acces():void
+        {
+
+            // Data needed for the test
+        
+            for($i = 0; $i <= 4; $i++){
+
+                User::factory()->create([
+
+                
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'User',
+                    'total_games' => fake()->numberBetween(1,100),
+                    'total_wins' => fake()->numberBetween(1,50),
+                    'winning_percentage' => fake()->numberBetween(1,50),
+        
+                ]);
+
+            }
+
+                $user = User::orderBy('id', 'desc')->get()->first();
+
+                for($i = 0; $i <= 5; $i++){
+
+                    Game::factory()->create([
+
+                        'player_id' =>  $user->id,
+                        'result' => fake()->numberBetween(1,12),  
+            
+                    ]);
+
+                }
+
+            
+
+
+            $test_user = User::orderBy('id', 'desc')->get()->first();
+
+            $id = $test_user->id + 2;
+         
+
+            Passport::actingAs(
+
+                User::factory()->create([
+
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'Admin',
+        
+        
+                ]),
+                ['create-servers']
+                );
+
+         
+            //$Test
+
+            $response = $this->getJson("api/players/{$id}/games");
+    
+            $response->assertStatus(200);
+            
+
+            //Restoring of DB
+
+            for($i = 0; $i <= 5; $i++){
+
+                $userCreated = User::orderBy('id', 'desc')->get()->first();
+                
+                User::destroy($userCreated->id);
+    
+            }
+    
+            $response= $this->assertDatabaseMissing('users',[
+                
+            'id' => $userCreated->id ]);
+
+        }
+
+
    
 }
