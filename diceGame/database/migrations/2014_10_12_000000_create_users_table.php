@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('total_games')->nullable();
             $table->integer('total_wins')->nullable();
             $table->integer('winning_percentage')->nullable();
-            $table->string('admin_roll')->default('usuario');  
+            $table->string('admin_role')->default('usuario');  
             $table->rememberToken();
             $table->timestamps();
         });

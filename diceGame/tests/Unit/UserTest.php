@@ -27,7 +27,8 @@ class UserTest extends TestCase
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'password_confirmation' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'admin_role' => 'Admin',
             
         ];
 
@@ -64,7 +65,7 @@ class UserTest extends TestCase
             'email' => '',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             
         ];
 
@@ -89,7 +90,7 @@ class UserTest extends TestCase
             'email' => 'rodrisaiz@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             
         ];
 
@@ -129,7 +130,7 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
         ];
 
         User::factory()->create($user);
@@ -139,7 +140,7 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => '1234',
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
         ];
 
         //Test
@@ -176,7 +177,7 @@ class UserTest extends TestCase
             'email' => '123456879@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             
         ];
 
@@ -201,7 +202,7 @@ class UserTest extends TestCase
             'email' => '',
             'email_verified_at' => '',
             'password' => '', 
-            'admin_roll' => '',
+            'admin_role' => '',
             
         ];
 
@@ -239,7 +240,7 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
         ];
 
         User::factory()->create($user);
@@ -288,7 +289,7 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             'total_games' => 80,
             'total_wins' => 30,
             'winning_percentage' => 26,
@@ -302,7 +303,7 @@ class UserTest extends TestCase
             'email' => 'user2@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             'total_games' => 100,
             'total_wins' => 50,
             'winning_percentage' => 50,
@@ -356,7 +357,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
                 'total_games' => 80,
                 'total_wins' => 30,
                 'winning_percentage' => 26,
@@ -375,16 +376,20 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id - 4;
         
         //Test
 
-        $response = $this->getJson('api/players/3');
+        $response = $this->getJson("api/players/{$id}");
 
     
         $response->assertStatus(200);
@@ -420,7 +425,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -465,7 +470,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'user',
+                'admin_role' => 'user',
     
     
             ]),
@@ -533,7 +538,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -587,7 +592,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
@@ -632,7 +637,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -650,7 +655,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
                 'total_games' => 80,
                 'total_wins' => 30,
                 'winning_percentage' => 26,
@@ -709,7 +714,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -752,7 +757,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
@@ -796,7 +801,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -815,7 +820,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => 80,
                 'total_wins' => 30,
                 'winning_percentage' => 26,
@@ -870,7 +875,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -888,7 +893,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -936,7 +941,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
@@ -954,7 +959,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1004,7 +1009,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1055,7 +1060,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -1073,7 +1078,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1120,7 +1125,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
@@ -1139,7 +1144,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1186,7 +1191,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),

@@ -18,23 +18,6 @@ class GameTest extends TestCase
 
         public function test_roll_dice_admin():void
         {
-
-            // Validation admin 
-            Passport::actingAs(
-
-                User::factory()->create([
-
-                    'username' => fake()->name(),
-                    'email' => fake()->unique()->safeEmail(),
-                    'email_verified_at' => now(),
-                    'password' => bcrypt('1234'),
-                    'admin_roll' => 'Admin',
-        
-        
-                ]),
-                ['create-servers']
-                );
-
             // Data needed for the test
             for($i = 0; $i <= 5; $i++){
 
@@ -45,7 +28,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -55,6 +38,23 @@ class GameTest extends TestCase
             }
 
             $user = User::orderBy('id', 'desc')->get()->first();
+
+
+              // Validation admin 
+              Passport::actingAs(
+
+                User::factory()->create([
+
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'Admin',
+        
+        
+                ]),
+                ['create-servers']
+                );
          
             //Test
 
@@ -80,7 +80,6 @@ class GameTest extends TestCase
         }
 
 
-
         
         public function test_roll_dice_valid_user():void
         {
@@ -97,7 +96,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -116,7 +115,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -161,7 +160,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -179,7 +178,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -230,7 +229,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -284,7 +283,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -318,7 +317,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'Admin',
+                    'admin_role' => 'Admin',
         
         
                 ]),
@@ -364,7 +363,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -399,7 +398,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -446,7 +445,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -474,7 +473,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -523,7 +522,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),

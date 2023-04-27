@@ -16,10 +16,10 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'username' => '',
+            'username' => 'unique:users',
             'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'admin_roll' => '',
+            'password' => 'required_with:password_confirmation|same:password_confirmation',
+            'password_confirmation' => 'required',
         ]);
 
         $data['password'] = bcrypt($request->password);
@@ -66,7 +66,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
         $request->validate([
@@ -93,7 +93,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
             return User::find($id);
@@ -122,7 +122,7 @@ class UserController extends Controller
 
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
             $user=User::find($id);
@@ -160,7 +160,7 @@ class UserController extends Controller
 
         $player = User::find($id);
 
-        if(($user->admin_roll == 'Admin' || $user->id == $id))
+        if(($user->admin_role == 'Admin' || $user->id == $id))
         {
 
             if(isset($player->id)){
