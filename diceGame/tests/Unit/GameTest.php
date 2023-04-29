@@ -292,10 +292,18 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
 
@@ -372,10 +380,18 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
 
@@ -454,12 +470,21 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
+
 
             }
 
@@ -531,12 +556,21 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
+
 
             }
 
@@ -599,10 +633,18 @@ test nuevos
 
                 for($i = 0; $i <= 5; $i++){
 
+                    $dice_1 = rand(1,5);
+
+                    $dice_2 = rand(1,5);
+
+                    $total_dices = $dice_1 + $dice_2;
+
                     Game::factory()->create([
 
                         'player_id' =>  $user->id,
-                        'result' => fake()->numberBetween(1,12),  
+                        'dice_1' => $dice_1,
+                        'dice_2' => $dice_2,
+                        'result' => $total_dices,  
             
                     ]);
 
@@ -665,10 +707,18 @@ test nuevos
 
                 for($i = 0; $i <= 5; $i++){
 
+                    $dice_1 = rand(1,5);
+
+                    $dice_2 = rand(1,5);
+
+                    $total_dices = $dice_1 + $dice_2;
+
                     Game::factory()->create([
 
                         'player_id' =>  $user->id,
-                        'result' => fake()->numberBetween(1,12),  
+                        'dice_1' => $dice_1,
+                        'dice_2' => $dice_2,
+                        'result' => $total_dices,  
             
                     ]);
 
@@ -747,10 +797,18 @@ test nuevos
 
                 for($i = 0; $i <= 5; $i++){
 
+                    $dice_1 = rand(1,5);
+
+                    $dice_2 = rand(1,5);
+
+                    $total_dices = $dice_1 + $dice_2;
+
                     Game::factory()->create([
 
                         'player_id' =>  $user->id,
-                        'result' => fake()->numberBetween(1,12),  
+                        'dice_1' => $dice_1,
+                        'dice_2' => $dice_2,
+                        'result' => $total_dices,  
             
                     ]);
 

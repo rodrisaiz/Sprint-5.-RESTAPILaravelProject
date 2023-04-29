@@ -18,9 +18,13 @@ class GameController extends Controller
 
                 $user = User::find($id);
                  
-                $dice = rand(1,5) + rand(1,5);
+                $dice_1 = rand(1,5);
 
-                if($dice == 7){
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
+                if($total_dices == 7){
 
                     $user->total_wins = $user->total_wins + 1;
                 
@@ -36,12 +40,15 @@ class GameController extends Controller
                 $game = Game::create([
                     
                     'player_id' => $id,
-                    'result' => $dice,
-                    
-                    
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices
+          
                 ]);
 
-            return  $game;
+            return response(['game' => $game
+                , 'message' => "You have roll the dices!"]
+            , 201 );
 
         }else{
 
@@ -73,6 +80,10 @@ class GameController extends Controller
                 }
             }
 
+            return response([
+                'message' => "The games have been destroyed!!"
+            ], 200 );
+
         }else{
 
             return response([
@@ -99,6 +110,10 @@ class GameController extends Controller
                 }
             }
             return $list_of_games;
+
+            return response(['list_of_games' => $list_of_games
+                , 'message' => "Successful access!"]
+            , 201 );
             
 
         }else{
