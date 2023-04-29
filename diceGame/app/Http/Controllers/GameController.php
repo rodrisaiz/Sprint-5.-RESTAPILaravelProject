@@ -82,6 +82,34 @@ class GameController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $user = auth()->user();
+        $list_of_games = array();
+        
+
+        if($user->admin_role == 'Admin' || $user->id == $id)
+        {
+            foreach(Game::all() as $one_game){
+
+                if($one_game->player_id == $id){
+
+                    array_push($list_of_games, $one_game);
+    
+                }
+            }
+            return $list_of_games;
+            
+
+        }else{
+
+            return response([
+                'error_message' => "Sorry! You don't have access"
+            ], 401 );
+
+        }
+    }
+
 
 }
 
