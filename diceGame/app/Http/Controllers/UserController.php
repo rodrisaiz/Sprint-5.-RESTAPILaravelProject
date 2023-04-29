@@ -28,7 +28,7 @@ class UserController extends Controller
 
         $token = $user->createToken('API Token')->accessToken;
 
-        return response([ 'user' => $user, 'token' => $token]);
+        return response([ 'user' => $user, 'token' => $token, 'message' => "You have been registered!"]);
     }
 
 
@@ -42,14 +42,14 @@ class UserController extends Controller
 
 
         if (!auth()->attempt($data)) {
-            return response(['error_message' => 'Incorrect Details. 
+            return response(['error_message' => 'Wrong credentials. 
             Please try again'], 422);
         }
 
 
         $token = auth()->user()->createToken('API Token')->accessToken;
 
-        return response(['user' => auth()->user(), 'token' => $token],);
+        return response(['user' => auth()->user(), 'token' => $token,'message' => "You have been logged in! Welcome!"],);
 
 
     }
@@ -61,7 +61,11 @@ class UserController extends Controller
         
         if($user->admin_role == 'Admin' || $user->id == $id)
         {
-            return User::all();
+            $all_users = User::all();
+
+            return response(['all_users' => $all_users
+                , 'message' => "Successful access!"]
+            , 200 );
 
         }else{
                     
@@ -87,7 +91,11 @@ class UserController extends Controller
                 'password' => 'required'
             ]);
             
-            return User::create($request->all());
+            $stored = User::create($request->all());
+
+            return response(['stored' => $stored
+                , 'message' => "Your information have saved!"]
+            , 200 );
 
         }else{
                     
@@ -150,7 +158,9 @@ class UserController extends Controller
         
                 }
 
-            return $user;
+            return response(['user' => $user
+                , 'message' => "Your information have been saved!"]
+            , 200 );
 
         }else{
             
@@ -174,7 +184,7 @@ class UserController extends Controller
 
             if(isset($player->id)){
 
-                return response([User::destroy($id)], 200);
+                return response([User::destroy($id),'message' => "Your user have been deleted!"], 200);
 
             }elseif(!isset($player->id)) {
 

@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Route;
 
 // No authentication needed routes
 
-Route::post('/players/register', [UserController::class, 'register'])->missing(function(){
+Route::post('/register', [UserController::class, 'register'])->missing(function(){
     return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
 });
 
-Route::post('/players/login', [UserController::class, 'login'])->missing(function(){
+Route::post('/login', [UserController::class, 'login'])->missing(function(){
     return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
 });
 

@@ -14,7 +14,7 @@ class UserTest extends TestCase
     //Testing all the user routes
 
    
-    //Testing -> Route::post('/players/register', [UserController::class, 'register']);
+    //Testing -> Route::post('/register', [UserController::class, 'register']);
 
 
     public function test_register_valid_form():void
@@ -34,7 +34,7 @@ class UserTest extends TestCase
 
         // Test 
 
-        $response = $this->postJson('api/players/register', $user);
+        $response = $this->postJson('api/register', $user);
 
         $response->assertStatus(200);
 
@@ -71,7 +71,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/players/register',$user);
+        $response = $this->postJson('api/register',$user);
 
         $response->assertStatus(422);
         
@@ -99,7 +99,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/players/register',$user);
+        $response = $this->postJson('api/register',$user);
 
      
         $response->assertStatus(422);
@@ -118,7 +118,7 @@ class UserTest extends TestCase
     }
     
 
-    //Testing -> Route::post('/players/login', [UserController::class, 'login']);
+    //Testing -> Route::post('/login', [UserController::class, 'login']);
 
     public function test_login_valid():void
     {
@@ -145,7 +145,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/players/login', $user2);
+        $response = $this->postJson('api/login', $user2);
 
  
         $response->assertStatus(200);
@@ -183,7 +183,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/players/login',$user);
+        $response = $this->postJson('api/login',$user);
 
         $response->assertStatus(422);
 
@@ -208,7 +208,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/players/login',$user);
+        $response = $this->postJson('api/login',$user);
 
         $response->assertStatus(422);
 
