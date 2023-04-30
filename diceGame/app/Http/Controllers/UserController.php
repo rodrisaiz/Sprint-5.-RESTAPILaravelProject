@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-//use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UserCollection;
+
 
 class UserController extends Controller
 {
@@ -26,9 +27,13 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        $token = $user->createToken('API Token')->accessToken;
+        $id = $user->id;
 
-        return response([ 'user' => $user, 'token' => $token, 'message' => "You have been registered!"]);
+        $token = $user->createToken('API Token')->accessToken;
+ 
+        return response(['user' => new UserResource(User::find($id))
+                , 'token' => $token], 200 );
+
     }
 
 
@@ -42,8 +47,7 @@ class UserController extends Controller
 
 
         if (!auth()->attempt($data)) {
-            return response(['error_message' => 'Wrong credentials. 
-            Please try again'], 422);
+            return response(['errorMessage' => 'Wrong credentials. Please try again'], 422);
         }
 
 
@@ -61,17 +65,14 @@ class UserController extends Controller
         
         if($user->admin_role == 'Admin' || $user->id == $id)
         {
-            $all_users = User::all();
 
-            return response(['all_users' => $all_users
-                , 'message' => "Successful access!"]
-            , 200 );
+            return response(['allUsers' => new UserCollection(User::all())
+                , 'message' => "Successful access!"], 200 );
 
         }else{
                     
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401);
+                'errorMessage' => "Sorry! You don't have access"], 401);
 
         }
     }
@@ -93,15 +94,13 @@ class UserController extends Controller
             
             $stored = User::create($request->all());
 
-            return response(['stored' => $stored
-                , 'message' => "Your information have saved!"]
-            , 200 );
+            return response(['stored' => new UserResource(User::find($store))
+                , 'message' => "Your information have saved!"], 200 );
 
         }else{
                     
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401);
+                'errorMessage' => "Sorry! You don't have access"], 401);
 
         }
     }
@@ -116,13 +115,24 @@ class UserController extends Controller
         if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
-            return User::find($id);
+            $specific_user=User::find($id);
+
+                if (isset($specific_user->id)){
+
+                    return response(['user' => new UserResource(User::find($id))
+                    , 'message' => "There is your information!"], 200 );
+
+                }else{
+            
+                    return response([
+                        'errorMessage' => "Sorry! The user don't exist"], 405);
+        
+                }
 
         }else{
 
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401 );
+                'errorMessage' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -153,20 +163,17 @@ class UserController extends Controller
                 }else{
             
                     return response([
-                        'error_message' => "Sorry! The user don't exist"
-                    ], 405);
+                        'errorMessage' => "Sorry! The user don't exist"], 405);
         
                 }
 
-            return response(['user' => $user
-                , 'message' => "Your information have been saved!"]
-            , 200 );
+            return response(['user' => new UserResource(User::find($id))
+                , 'message' => "Your information have been saved!"], 200 );
 
         }else{
             
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401 );
+                'errorMessage' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -189,14 +196,12 @@ class UserController extends Controller
             }elseif(!isset($player->id)) {
 
                 return response([
-                    'error_message' => "Sorry! The user don't exist"
-                ], 405);
+                    'errorMessage' => "Sorry! The user don't exist"], 405);
             }
         }else{
                 
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401 );
+                'errorMessage' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -206,9 +211,10 @@ class UserController extends Controller
 
     public function rank()
     {
-        $players = User::orderBy('winning_percentage','desc')->get();
+        User::orderBy('winning_percentage','desc')->get();
 
-        return $players;
+        return response(['rank' => new UserCollection(User::all())
+        , 'message' => "Successful access!"], 200 );
 
     }
 
@@ -217,10 +223,10 @@ class UserController extends Controller
 
     public function rank_loser()
     {
+        User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
 
-        $player = User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
-      
-        return $player;
+        return response(['loserUsers' => new UserCollection(User::all())
+        , 'message' => "Successful access!"], 200 );
 
     }
 
@@ -231,9 +237,11 @@ class UserController extends Controller
     public function rank_winner()
     {
 
-        $player = User::orderBy('winning_percentage', 'desc')->get()->first();
-      
-        return $player;
+        User::orderBy('winning_percentage', 'desc')->get()->first();
+
+        return response(['winningUsers' => new UserCollection(User::all())
+                , 'message' => "Successful access!"]
+            , 200 );
 
     }
 

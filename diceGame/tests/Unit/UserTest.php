@@ -466,7 +466,7 @@ class UserTest extends TestCase
         $response = $this->getJson("api/players/{$id}");
 
     
-        $response->assertStatus(200);
+        $response->assertStatus(405);
 
         //Restoring of DB
 
