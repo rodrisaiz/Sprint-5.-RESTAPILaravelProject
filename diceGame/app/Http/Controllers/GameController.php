@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Game;
 use Illuminate\Http\Request;
+use App\Http\Resources\GameResource;
+use App\Http\Resources\GameCollection;
 
 class GameController extends Controller
 {
@@ -46,14 +48,15 @@ class GameController extends Controller
           
                 ]);
 
-            return response(['game' => $game
+
+            return response(['game' => new GameResource(Game::find($game->id))
                 , 'message' => "You have roll the dices!"]
             , 201 );
 
         }else{
 
             return response([
-                'error_message' => "Sorry! You don't have access"
+                'errorMessage' => "Sorry! You don't have access"
             ], 401 );
 
         }
@@ -87,7 +90,7 @@ class GameController extends Controller
         }else{
 
             return response([
-                'error_message' => "Sorry! You don't have access"
+                'errorMessage' => "Sorry! You don't have access"
             ], 401 );
 
         }
@@ -101,25 +104,16 @@ class GameController extends Controller
 
         if($user->admin_role == 'Admin' || $user->id == $id)
         {
-            foreach(Game::all() as $one_game){
+            Game::where('player_id', '=', $id);
 
-                if($one_game->player_id == $id){
-
-                    array_push($list_of_games, $one_game);
-    
-                }
-            }
-            return $list_of_games;
-
-            return response(['list_of_games' => $list_of_games
-                , 'message' => "Successful access!"]
-            , 201 );
-            
+            return response(['listOfGames' => new GameCollection(Game::all())
+                    , 'message' => "Successful access!"]
+                , 200 );
 
         }else{
 
             return response([
-                'error_message' => "Sorry! You don't have access"
+                'errorMessage' => "Sorry! You don't have access"
             ], 401 );
 
         }

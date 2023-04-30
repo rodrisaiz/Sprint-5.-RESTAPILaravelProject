@@ -18,10 +18,7 @@ class Game extends Model
 
     public function user()
     {
-
         return $this->hasOne(User::class);
- 
-
     }
 
     public function player_id()
