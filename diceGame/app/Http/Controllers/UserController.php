@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-//use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UserCollection;
+
 
 class UserController extends Controller
 {
@@ -16,19 +17,23 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'username' => '',
+            'username' => 'unique:users',
             'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'admin_roll' => '',
+            'password' => 'required_with:password_confirmation|same:password_confirmation',
+            'password_confirmation' => 'required',
         ]);
 
         $data['password'] = bcrypt($request->password);
 
         $user = User::create($data);
 
-        $token = $user->createToken('API Token')->accessToken;
+        $id = $user->id;
 
-        return response([ 'user' => $user, 'token' => $token]);
+        $token = $user->createToken('API Token')->accessToken;
+ 
+        return response(['user' => new UserResource(User::find($id))
+                , 'token' => $token], 200 );
+
     }
 
 
@@ -42,14 +47,13 @@ class UserController extends Controller
 
 
         if (!auth()->attempt($data)) {
-            return response(['error_message' => 'Incorrect Details. 
-            Please try again'], 422);
+            return response(['errorMessage' => 'Wrong credentials. Please try again'], 422);
         }
 
 
         $token = auth()->user()->createToken('API Token')->accessToken;
 
-        return response(['user' => auth()->user(), 'token' => $token],);
+        return response(['user' => auth()->user(), 'token' => $token,'message' => "You have been logged in! Welcome!"],);
 
 
     }
@@ -57,7 +61,20 @@ class UserController extends Controller
     
     public function index()
     {
-        return User::all();
+        $user = auth()->user();
+        
+        if($user->admin_role == 'Admin' || $user->id == $id)
+        {
+
+            return response(['allUsers' => new UserCollection(User::all())
+                , 'message' => "Successful access!"], 200 );
+
+        }else{
+                    
+            return response([
+                'errorMessage' => "Sorry! You don't have access"], 401);
+
+        }
     }
 
     
@@ -66,7 +83,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
         $request->validate([
@@ -75,13 +92,15 @@ class UserController extends Controller
                 'password' => 'required'
             ]);
             
-            return User::create($request->all());
+            $stored = User::create($request->all());
+
+            return response(['stored' => new UserResource(User::find($store))
+                , 'message' => "Your information have saved!"], 200 );
 
         }else{
                     
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401);
+                'errorMessage' => "Sorry! You don't have access"], 401);
 
         }
     }
@@ -93,22 +112,30 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
-            return User::find($id);
+            $specific_user=User::find($id);
+
+                if (isset($specific_user->id)){
+
+                    return response(['user' => new UserResource(User::find($id))
+                    , 'message' => "There is your information!"], 200 );
+
+                }else{
+            
+                    return response([
+                        'errorMessage' => "Sorry! The user don't exist"], 405);
+        
+                }
 
         }else{
 
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401 );
+                'errorMessage' => "Sorry! You don't have access"], 401 );
 
         }
     }
-
-    
-
 
 
     public function update(Request $request, $id)
@@ -122,7 +149,7 @@ class UserController extends Controller
 
         $user = auth()->user();
 
-        if($user->admin_roll == 'Admin' || $user->id == $id)
+        if($user->admin_role == 'Admin' || $user->id == $id)
         {
 
             $user=User::find($id);
@@ -136,18 +163,17 @@ class UserController extends Controller
                 }else{
             
                     return response([
-                        'error_message' => "Sorry! The user don't exist"
-                    ], 405);
+                        'errorMessage' => "Sorry! The user don't exist"], 405);
         
                 }
 
-            return $user;
+            return response(['user' => new UserResource(User::find($id))
+                , 'message' => "Your information have been saved!"], 200 );
 
         }else{
             
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401 );
+                'errorMessage' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -160,22 +186,22 @@ class UserController extends Controller
 
         $player = User::find($id);
 
-        if(($user->admin_roll == 'Admin' || $user->id == $id) && isset($player->id))
+        if(($user->admin_role == 'Admin' || $user->id == $id))
         {
 
-            return response([User::destroy($id)], 200);
+            if(isset($player->id)){
 
-        }elseif(!isset($player->id)) {
+                return response([User::destroy($id),'message' => "Your user have been deleted!"], 200);
 
-            return response([
-                'error_message' => "Sorry! The user don't exist"
-            ], 405);
-            
+            }elseif(!isset($player->id)) {
+
+                return response([
+                    'errorMessage' => "Sorry! The user don't exist"], 405);
+            }
         }else{
                 
             return response([
-                'error_message' => "Sorry! You don't have access"
-            ], 401 );
+                'errorMessage' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -185,9 +211,10 @@ class UserController extends Controller
 
     public function rank()
     {
-        $players = User::orderBy('winning_percentage','desc')->get();
+        User::orderBy('winning_percentage','desc')->get();
 
-        return $players;
+        return response(['rank' => new UserCollection(User::all())
+        , 'message' => "Successful access!"], 200 );
 
     }
 
@@ -196,10 +223,10 @@ class UserController extends Controller
 
     public function rank_loser()
     {
+        User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
 
-        $player = User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
-      
-        return $player;
+        return response(['loserUsers' => new UserCollection(User::all())
+        , 'message' => "Successful access!"], 200 );
 
     }
 
@@ -210,9 +237,11 @@ class UserController extends Controller
     public function rank_winner()
     {
 
-        $player = User::orderBy('winning_percentage', 'desc')->get()->first();
-      
-        return $player;
+        User::orderBy('winning_percentage', 'desc')->get()->first();
+
+        return response(['winningUsers' => new UserCollection(User::all())
+                , 'message' => "Successful access!"]
+            , 200 );
 
     }
 

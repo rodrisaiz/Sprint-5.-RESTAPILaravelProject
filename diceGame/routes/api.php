@@ -7,24 +7,61 @@ use Illuminate\Support\Facades\Route;
 
 // No authentication needed routes
 
-Route::post('/player/register', [UserController::class, 'register']);
-Route::post('/player/login', [UserController::class, 'login']);
-Route::get('/players', [UserController::class, 'index']);
-Route::get('/players/ranking', [UserController::class, 'rank']);
+Route::post('/register', [UserController::class, 'register'])->missing(function(){
+    return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+});
+
+Route::post('/login', [UserController::class, 'login'])->missing(function(){
+    return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+});
+
+Route::get('/players/ranking', [UserController::class, 'rank'])->missing(function(){
+    return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+});
 
 
 // Authentication needed routes
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::GROUP(['middleware' => ['auth:api']], function () {
 
-    Route::get('/players/{id}', [UserController::class, 'show']);
-    Route::put('/players/{id}', [UserController::class, 'update']);
-    Route::delete('/player/{id}', [UserController::class, 'destroy']);
-    Route::get('/players/ranking/loser', [UserController::class, 'rank_loser']);
-    Route::get('/players/ranking/winner', [UserController::class, 'rank_winner']);
+    Route::get('/players', [UserController::class, 'index'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
 
-    Route::post('/players/{id}/games', [GameController::class, 'roll']);
-    Route::delete('/players/{id}/games', [GameController::class, 'destroy']);
+    Route::get('/players/{id}', [UserController::class, 'show'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+
+    Route::put('/players/{id}', [UserController::class, 'update'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+    Route::delete('/players/{id}', [UserController::class, 'destroy'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+    Route::get('/players/ranking/loser', [UserController::class, 'rank_loser'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+    Route::get('/players/ranking/winner', [UserController::class, 'rank_winner'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+    Route::post('/players/{id}/games', [GameController::class, 'roll'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+    Route::get('/players/{id}/games', [GameController::class, 'show'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+    Route::delete('/players/{id}/games', [GameController::class, 'destroy'])->missing(function(){
+        return response(['error_message' => 'Ooops! 404'], 404)->header('Content-Type','text/plain');
+    });
+
+
 
 });
 

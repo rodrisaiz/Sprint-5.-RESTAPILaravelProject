@@ -15,6 +15,8 @@ return new class extends Migration
             
             $table->id();
             $table->foreignId('player_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer("dice_1");
+            $table->integer("dice_2");
             $table->integer("result");
             $table->timestamps();
         });

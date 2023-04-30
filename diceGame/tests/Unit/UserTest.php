@@ -14,7 +14,7 @@ class UserTest extends TestCase
     //Testing all the user routes
 
    
-    //Testing -> Route::post('/player/register', [UserController::class, 'register']);
+    //Testing -> Route::post('/register', [UserController::class, 'register']);
 
 
     public function test_register_valid_form():void
@@ -27,13 +27,14 @@ class UserTest extends TestCase
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'password_confirmation' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'admin_role' => 'Admin',
             
         ];
 
         // Test 
 
-        $response = $this->postJson('api/player/register', $user);
+        $response = $this->postJson('api/register', $user);
 
         $response->assertStatus(200);
 
@@ -64,13 +65,13 @@ class UserTest extends TestCase
             'email' => '',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             
         ];
 
         //Test
 
-        $response = $this->postJson('api/player/register',$user);
+        $response = $this->postJson('api/register',$user);
 
         $response->assertStatus(422);
         
@@ -89,7 +90,7 @@ class UserTest extends TestCase
             'email' => 'rodrisaiz@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             
         ];
 
@@ -98,7 +99,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->postJson('api/player/register',$user);
+        $response = $this->postJson('api/register',$user);
 
      
         $response->assertStatus(422);
@@ -117,7 +118,7 @@ class UserTest extends TestCase
     }
     
 
-    //Testing -> Route::post('/player/login', [UserController::class, 'login']);
+    //Testing -> Route::post('/login', [UserController::class, 'login']);
 
     public function test_login_valid():void
     {
@@ -129,7 +130,7 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
         ];
 
         User::factory()->create($user);
@@ -139,12 +140,12 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => '1234',
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
         ];
 
         //Test
 
-        $response = $this->postJson('api/player/login', $user2);
+        $response = $this->postJson('api/login', $user2);
 
  
         $response->assertStatus(200);
@@ -176,13 +177,13 @@ class UserTest extends TestCase
             'email' => '123456879@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             
         ];
 
         //Test
 
-        $response = $this->postJson('api/player/login',$user);
+        $response = $this->postJson('api/login',$user);
 
         $response->assertStatus(422);
 
@@ -201,13 +202,13 @@ class UserTest extends TestCase
             'email' => '',
             'email_verified_at' => '',
             'password' => '', 
-            'admin_roll' => '',
+            'admin_role' => '',
             
         ];
 
         //Test
 
-        $response = $this->postJson('api/player/login',$user);
+        $response = $this->postJson('api/login',$user);
 
         $response->assertStatus(422);
 
@@ -223,7 +224,7 @@ class UserTest extends TestCase
 
         $response = $this->getJson('api/players');
     
-        $response->assertStatus(200);
+        $response->assertStatus(401);
 
     }
 
@@ -234,15 +235,39 @@ class UserTest extends TestCase
 
         // Data needed for the test
 
-        $user = [
-            'username' =>  "Rodri",
-            'email' => 'user@user.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
-        ];
+        
+        for($i = 0; $i <= 5; $i++){
 
-        User::factory()->create($user);
+            User::factory()->create([
+
+            
+                'username' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'email_verified_at' => now(),
+                'password' => bcrypt('1234'),
+                'admin_role' => 'Admin',
+                'total_games' => 80,
+                'total_wins' => 30,
+                'winning_percentage' => 26,
+    
+            ]);
+
+        }
+
+        Passport::actingAs(
+
+            User::factory()->create([
+
+                'username' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'email_verified_at' => now(),
+                'password' => bcrypt('1234'),
+                'admin_role' => 'Admin',
+    
+    
+            ]),
+            ['create-servers']
+        );
 
         //Test
 
@@ -252,9 +277,13 @@ class UserTest extends TestCase
 
         //Restoring of DB
 
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
+        for($i = 0; $i <= 5; $i++){
+
+            $userCreated = User::orderBy('id', 'desc')->get()->first();
             
-        User::destroy($userCreated->id);
+            User::destroy($userCreated->id);
+
+        }
 
         $response= $this->assertDatabaseMissing('users',[
             
@@ -268,6 +297,7 @@ class UserTest extends TestCase
 
     public function test_rank_all_the_players_no_data():void
     {
+        
 
     //Test
 
@@ -288,7 +318,7 @@ class UserTest extends TestCase
             'email' => 'user@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             'total_games' => 80,
             'total_wins' => 30,
             'winning_percentage' => 26,
@@ -302,7 +332,7 @@ class UserTest extends TestCase
             'email' => 'user2@user.com',
             'email_verified_at' => now(),
             'password' => bcrypt('1234'),
-            'admin_roll' => 'Admin',
+            'admin_role' => 'Admin',
             'total_games' => 100,
             'total_wins' => 50,
             'winning_percentage' => 50,
@@ -319,23 +349,19 @@ class UserTest extends TestCase
 
         //Restoring of DB
 
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
+      
+           
+        for($i = 0; $i <= 1; $i++){
+
+            $userCreated = User::orderBy('id', 'desc')->get()->first();
             
-        User::destroy($userCreated->id);
+            User::destroy($userCreated->id);
+
+        }
 
         $response= $this->assertDatabaseMissing('users',[
             
         'id' => $userCreated->id ]);
-        
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
-            
-        User::destroy($userCreated->id);
-
-        $response= $this->assertDatabaseMissing('users',[
-            
-        'id' => $userCreated->id ]);
-        
-    
 
     }
 
@@ -356,7 +382,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
                 'total_games' => 80,
                 'total_wins' => 30,
                 'winning_percentage' => 26,
@@ -375,16 +401,20 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id - 4;
         
         //Test
 
-        $response = $this->getJson('api/players/3');
+        $response = $this->getJson("api/players/{$id}");
 
     
         $response->assertStatus(200);
@@ -420,19 +450,23 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->getJson('api/players/5');
+        $response = $this->getJson("api/players/{$id}");
 
     
-        $response->assertStatus(200);
+        $response->assertStatus(405);
 
         //Restoring of DB
 
@@ -461,16 +495,20 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'user',
+                'admin_role' => 'user',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->getJson('api/players/5');
+        $response = $this->getJson("api/players/{$id}");
 
     
         $response->assertStatus(401);
@@ -525,23 +563,27 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->putJson('api/players/5', $user);
+        $response = $this->putJson("api/players/{$id}", $user);
 
     
         $response->assertStatus(405);
 
         //Restoring of DB
 
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
+       
         
         User::destroy($userCreated->id);
 
@@ -575,16 +617,20 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
             ['create-servers']
         );
         
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+
+        $id = $userCreated->id + 2;
+
         //Test
 
-        $response = $this->putJson('api/players/3', $user);
+        $response = $this->putJson("api/players/{$id}", $user);
 
     
         $response->assertStatus(401);
@@ -616,7 +662,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -634,7 +680,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
                 'total_games' => 80,
                 'total_wins' => 30,
                 'winning_percentage' => 26,
@@ -678,7 +724,7 @@ class UserTest extends TestCase
 
     }
 
-    //Testing -> Route::delete('/player/{id}', [UserController::class, 'destroy']);
+    //Testing -> Route::delete('/players/{id}', [UserController::class, 'destroy']);
 
     public function test_delete_an_specific_player_that_don´t_exist_admin_roll():void
     {
@@ -693,23 +739,24 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
         
+        $id = $userCreated->id + 2;
         //Test
 
-        $response = $this->deleteJson('api/player/1');
+        $response = $this->deleteJson("api/players/{$id}");
 
     
         $response->assertStatus(405);
 
          //Restoring of DB
-
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
         
         User::destroy($userCreated->id);
 
@@ -735,23 +782,25 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
             ['create-servers']
         );
+
+        $userCreated = User::orderBy('id', 'desc')->get()->first();
+        
+        $id = $userCreated->id + 2;
         
         //Test
 
-        $response = $this->deleteJson('api/player/5');
+        $response = $this->deleteJson("api/players/{$id}");
 
     
-        $response->assertStatus(405);
+        $response->assertStatus(401);
 
         //Restoring of DB
-
-        $userCreated = User::orderBy('id', 'desc')->get()->first();
         
         User::destroy($userCreated->id);
 
@@ -777,7 +826,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -796,7 +845,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => 80,
                 'total_wins' => 30,
                 'winning_percentage' => 26,
@@ -811,7 +860,7 @@ class UserTest extends TestCase
 
         //Test
 
-        $response = $this->deleteJson("api/player/{$user->id}");
+        $response = $this->deleteJson("api/players/{$user->id}");
 
     
         $response->assertStatus(200);
@@ -851,7 +900,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -869,7 +918,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -917,7 +966,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
@@ -935,7 +984,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -985,7 +1034,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1036,7 +1085,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'Admin',
+                'admin_role' => 'Admin',
     
     
             ]),
@@ -1054,7 +1103,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1101,7 +1150,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
     
     
             ]),
@@ -1120,7 +1169,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),
@@ -1167,7 +1216,7 @@ class UserTest extends TestCase
                 'email' => fake()->unique()->safeEmail(),
                 'email_verified_at' => now(),
                 'password' => bcrypt('1234'),
-                'admin_roll' => 'User',
+                'admin_role' => 'User',
                 'total_games' => fake()->numberBetween(1,100),
                 'total_wins' => fake()->numberBetween(1,50),
                 'winning_percentage' => fake()->numberBetween(1,50),

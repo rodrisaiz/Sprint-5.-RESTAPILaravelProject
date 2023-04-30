@@ -18,23 +18,6 @@ class GameTest extends TestCase
 
         public function test_roll_dice_admin():void
         {
-
-            // Validation admin 
-            Passport::actingAs(
-
-                User::factory()->create([
-
-                    'username' => fake()->name(),
-                    'email' => fake()->unique()->safeEmail(),
-                    'email_verified_at' => now(),
-                    'password' => bcrypt('1234'),
-                    'admin_roll' => 'Admin',
-        
-        
-                ]),
-                ['create-servers']
-                );
-
             // Data needed for the test
             for($i = 0; $i <= 5; $i++){
 
@@ -45,7 +28,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -55,6 +38,23 @@ class GameTest extends TestCase
             }
 
             $user = User::orderBy('id', 'desc')->get()->first();
+
+
+              // Validation admin 
+              Passport::actingAs(
+
+                User::factory()->create([
+
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'Admin',
+        
+        
+                ]),
+                ['create-servers']
+                );
          
             //Test
 
@@ -80,7 +80,6 @@ class GameTest extends TestCase
         }
 
 
-
         
         public function test_roll_dice_valid_user():void
         {
@@ -97,7 +96,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -116,7 +115,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -161,7 +160,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -179,7 +178,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -230,7 +229,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -284,7 +283,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -293,10 +292,18 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
 
@@ -318,7 +325,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'Admin',
+                    'admin_role' => 'Admin',
         
         
                 ]),
@@ -364,7 +371,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -373,10 +380,18 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
 
@@ -399,7 +414,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -446,7 +461,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -455,12 +470,21 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
+
 
             }
 
@@ -474,7 +498,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
         
         
                 ]),
@@ -523,7 +547,7 @@ class GameTest extends TestCase
                     'email' => fake()->unique()->safeEmail(),
                     'email_verified_at' => now(),
                     'password' => bcrypt('1234'),
-                    'admin_roll' => 'User',
+                    'admin_role' => 'User',
                     'total_games' => fake()->numberBetween(1,100),
                     'total_wins' => fake()->numberBetween(1,50),
                     'winning_percentage' => fake()->numberBetween(1,50),
@@ -532,12 +556,21 @@ class GameTest extends TestCase
 
                 $user = User::orderBy('id', 'desc')->get()->first();
 
+                $dice_1 = rand(1,5);
+
+                $dice_2 = rand(1,5);
+
+                $total_dices = $dice_1 + $dice_2;
+
                 Game::factory()->create([
 
                     'player_id' =>  $user->id,
-                    'result' => fake()->numberBetween(1,12),  
+                    'dice_1' => $dice_1,
+                    'dice_2' => $dice_2,
+                    'result' => $total_dices,  
         
                 ]);
+
 
             }
 
@@ -568,6 +601,266 @@ class GameTest extends TestCase
 
 
         }
+
+/*
+test nuevos
+*/
+
+        public function test_get_all_the_games_from_an_speciific_player_invalid_acces():void
+        {
+
+            // Data needed for the test
+        
+            for($i = 0; $i <= 4; $i++){
+
+                User::factory()->create([
+
+                
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'User',
+                    'total_games' => fake()->numberBetween(1,100),
+                    'total_wins' => fake()->numberBetween(1,50),
+                    'winning_percentage' => fake()->numberBetween(1,50),
+        
+                ]);
+
+            }
+
+                $user = User::orderBy('id', 'desc')->get()->first();
+
+                for($i = 0; $i <= 5; $i++){
+
+                    $dice_1 = rand(1,5);
+
+                    $dice_2 = rand(1,5);
+
+                    $total_dices = $dice_1 + $dice_2;
+
+                    Game::factory()->create([
+
+                        'player_id' =>  $user->id,
+                        'dice_1' => $dice_1,
+                        'dice_2' => $dice_2,
+                        'result' => $total_dices,  
+            
+                    ]);
+
+                }
+
+            
+
+
+            $test_user = User::orderBy('id', 'desc')->get()->first();
+         
+         
+            //$Test
+
+            $response = $this->getJson("api/players/{$test_user->id}/games");
+    
+            $response->assertStatus(401);
+            
+
+            //Restoring of DB
+
+            for($i = 0; $i <= 4; $i++){
+
+                $userCreated = User::orderBy('id', 'desc')->get()->first();
+                
+                User::destroy($userCreated->id);
+    
+            }
+    
+            $response= $this->assertDatabaseMissing('users',[
+                
+            'id' => $userCreated->id ]);
+
+        }
+
+
+        public function test_get_all_the_games_from_an_speciific_player_valid_acces():void
+        {
+
+            // Data needed for the test
+        
+            for($i = 0; $i <= 4; $i++){
+
+                User::factory()->create([
+
+                
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'User',
+                    'total_games' => fake()->numberBetween(1,100),
+                    'total_wins' => fake()->numberBetween(1,50),
+                    'winning_percentage' => fake()->numberBetween(1,50),
+        
+                ]);
+
+            }
+
+                $user = User::orderBy('id', 'desc')->get()->first();
+
+                for($i = 0; $i <= 5; $i++){
+
+                    $dice_1 = rand(1,5);
+
+                    $dice_2 = rand(1,5);
+
+                    $total_dices = $dice_1 + $dice_2;
+
+                    Game::factory()->create([
+
+                        'player_id' =>  $user->id,
+                        'dice_1' => $dice_1,
+                        'dice_2' => $dice_2,
+                        'result' => $total_dices,  
+            
+                    ]);
+
+                }
+
+            
+
+
+            $test_user = User::orderBy('id', 'desc')->get()->first();
+         
+
+            Passport::actingAs(
+
+                User::factory()->create([
+
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'Admin',
+        
+        
+                ]),
+                ['create-servers']
+                );
+
+         
+            //$Test
+
+            $response = $this->getJson("api/players/{$test_user->id}/games");
+    
+            $response->assertStatus(200);
+            
+
+            //Restoring of DB
+
+            for($i = 0; $i <= 5; $i++){
+
+                $userCreated = User::orderBy('id', 'desc')->get()->first();
+                
+                User::destroy($userCreated->id);
+    
+            }
+    
+            $response= $this->assertDatabaseMissing('users',[
+                
+            'id' => $userCreated->id ]);
+
+        }
+
+
+        public function test_get_all_the_games_from_an_unexisting_player_valid_acces():void
+        {
+
+            // Data needed for the test
+        
+            for($i = 0; $i <= 4; $i++){
+
+                User::factory()->create([
+
+                
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'User',
+                    'total_games' => fake()->numberBetween(1,100),
+                    'total_wins' => fake()->numberBetween(1,50),
+                    'winning_percentage' => fake()->numberBetween(1,50),
+        
+                ]);
+
+            }
+
+                $user = User::orderBy('id', 'desc')->get()->first();
+
+                for($i = 0; $i <= 5; $i++){
+
+                    $dice_1 = rand(1,5);
+
+                    $dice_2 = rand(1,5);
+
+                    $total_dices = $dice_1 + $dice_2;
+
+                    Game::factory()->create([
+
+                        'player_id' =>  $user->id,
+                        'dice_1' => $dice_1,
+                        'dice_2' => $dice_2,
+                        'result' => $total_dices,  
+            
+                    ]);
+
+                }
+
+            
+
+
+            $test_user = User::orderBy('id', 'desc')->get()->first();
+
+            $id = $test_user->id + 2;
+         
+
+            Passport::actingAs(
+
+                User::factory()->create([
+
+                    'username' => fake()->name(),
+                    'email' => fake()->unique()->safeEmail(),
+                    'email_verified_at' => now(),
+                    'password' => bcrypt('1234'),
+                    'admin_role' => 'Admin',
+        
+        
+                ]),
+                ['create-servers']
+                );
+
+         
+            //$Test
+
+            $response = $this->getJson("api/players/{$id}/games");
+    
+            $response->assertStatus(200);
+            
+
+            //Restoring of DB
+
+            for($i = 0; $i <= 5; $i++){
+
+                $userCreated = User::orderBy('id', 'desc')->get()->first();
+                
+                User::destroy($userCreated->id);
+    
+            }
+    
+            $response= $this->assertDatabaseMissing('users',[
+                
+            'id' => $userCreated->id ]);
+
+        }
+
 
    
 }

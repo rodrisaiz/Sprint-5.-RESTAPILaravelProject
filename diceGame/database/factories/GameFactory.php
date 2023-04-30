@@ -19,99 +19,20 @@ class GameFactory extends Factory
     public function definition(): array
     {
 
-        return [
+        $dice_1 = rand(1,5);
 
-            'player_id' =>fake()->numberBetween(1,50),
-            'result' => fake()->numberBetween(1,12),
-            
-        ];
+        $dice_2 = rand(1,5);
 
-
-/*
-        return [
-
-            'player_id' => fake()->numberBetween(1,50),
-            'result' => fake()->unique()->safeEmail(),
-            `updated_at` => fake()->dateTime(),
-            `created_at` => fake()->dateTime(),
-        ];
-
-
-        $game = new Game();
-
-        $player_id = fake()->numberBetween(1,50);
+        $total_dices = $dice_1 + $dice_2;
 
         return [
 
-            'player_id' => $player_id,
-            'result' => $game->roll($player_id),
+            'player_id' => User::factory(),
+            'dice_1' => $dice_1,
+            'dice_2' => $dice_2,
+            'result' => $total_dices
             
         ];
-
-        
-
-
-        $game = new Game();
-
-        $game->id_player = rand(1,50);
-        //$game->result = $game->roll($game->id_player);
-
-        $game->save();
-
-                    /*    
-                    $user = User::find(rand(1,50));
-                        
-                
-                    
-                    $dice = rand(1,5) + rand(1,5);
-
-
-    
-                    if($dice == 7){
-    
-                    $total_wins = $user->total_wins + 1;
-                    
-                    }
-    
-                    $total_games = $user->total_games + 1;
-    
-                    $winning_percentage = ($user->total_wins * 100) / $user->total_games;
-    
-                    $user->save();
-    
-                     
-
-                    Game::roll(rand(1,50));
-                    *Game::create([
-                        
-                        'player_id' => $user->id,
-                        'result' => $dice,
-                        
-                    ]);
-
-                        return [
-
-                            'username' => $user->username,
-                            'email' => $user->email,
-                            'email_verified_at' => $user->email_verofoed_at,
-                            'password' => $user->password, 
-                            'remember_token' => $user->remember_token,
-                            'admin_roll' => $user->admin_roll,
-                            'total_games' => $total_games,
-                            'total_wins' => $total_wins,
-                            'winning_percentage' => $winning_percentage,
-
-                                        
-                    
-                ];
-
-                $game = Game()->roll(rand(1,50));
-    */
-            
-        
-               
-
-
-               
+     
     }
 }
