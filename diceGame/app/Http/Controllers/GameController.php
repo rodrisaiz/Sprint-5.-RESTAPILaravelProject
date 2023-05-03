@@ -56,7 +56,7 @@ class GameController extends Controller
         }else{
 
             return response([
-                'errorMessage' => "Sorry! You don't have access"
+                'error_message' => "Sorry! You don't have access"
             ], 401 );
 
         }
@@ -90,7 +90,7 @@ class GameController extends Controller
         }else{
 
             return response([
-                'errorMessage' => "Sorry! You don't have access"
+                'error_message' => "Sorry! You don't have access"
             ], 401 );
 
         }
@@ -106,14 +106,14 @@ class GameController extends Controller
         {
             Game::where('player_id', '=', $id);
 
-            return response(['listOfGames' => new GameCollection(Game::all())
+            return response(['list_of_games' => new GameCollection(Game::all())
                     , 'message' => "Successful access!"]
                 , 200 );
 
         }else{
 
             return response([
-                'errorMessage' => "Sorry! You don't have access"
+                'error_message' => "Sorry! You don't have access"
             ], 401 );
 
         }

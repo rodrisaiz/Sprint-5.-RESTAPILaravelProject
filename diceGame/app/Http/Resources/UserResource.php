@@ -20,9 +20,9 @@ class UserResource extends JsonResource
             "id" => $this->id,
             "username" => $this->username,
             "email" => $this->email,
-            "totalGames" => $this->total_games,
-            "totalWins" => $this->total_wins,
-            "winningPercentage" => $this->winning_percentage
+            "total_games" => $this->total_games,
+            "total_wins" => $this->total_wins,
+            "winning_percentage" => $this->winning_percentage
 
         ];
     }
