@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
@@ -47,7 +46,7 @@ class UserController extends Controller
 
 
         if (!auth()->attempt($data)) {
-            return response(['errorMessage' => 'Wrong credentials. Please try again'], 422);
+            return response(['error_message' => 'Wrong credentials. Please try again'], 422);
         }
 
 
@@ -63,7 +62,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         
-        if($user->admin_role == 'Admin' || $user->id == $id)
+        if(isset($user->id))
         {
 
             return response(['allUsers' => new UserCollection(User::all())
@@ -72,7 +71,7 @@ class UserController extends Controller
         }else{
                     
             return response([
-                'errorMessage' => "Sorry! You don't have access"], 401);
+                'error_message' => "Sorry! You don't have access"], 401);
 
         }
     }
@@ -100,7 +99,7 @@ class UserController extends Controller
         }else{
                     
             return response([
-                'errorMessage' => "Sorry! You don't have access"], 401);
+                'error_message' => "Sorry! You don't have access"], 401);
 
         }
     }
@@ -125,14 +124,14 @@ class UserController extends Controller
                 }else{
             
                     return response([
-                        'errorMessage' => "Sorry! The user don't exist"], 405);
+                        'error_message' => "Sorry! The user don't exist"], 405);
         
                 }
 
         }else{
 
             return response([
-                'errorMessage' => "Sorry! You don't have access"], 401 );
+                'error_message' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -163,7 +162,7 @@ class UserController extends Controller
                 }else{
             
                     return response([
-                        'errorMessage' => "Sorry! The user don't exist"], 405);
+                        'error_message' => "Sorry! The user don't exist"], 405);
         
                 }
 
@@ -173,7 +172,7 @@ class UserController extends Controller
         }else{
             
             return response([
-                'errorMessage' => "Sorry! You don't have access"], 401 );
+                'error_message' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -196,12 +195,12 @@ class UserController extends Controller
             }elseif(!isset($player->id)) {
 
                 return response([
-                    'errorMessage' => "Sorry! The user don't exist"], 405);
+                    'error_message' => "Sorry! The user don't exist"], 405);
             }
         }else{
                 
             return response([
-                'errorMessage' => "Sorry! You don't have access"], 401 );
+                'error_message' => "Sorry! You don't have access"], 401 );
 
         }
     }
@@ -211,9 +210,9 @@ class UserController extends Controller
 
     public function rank()
     {
-        User::orderBy('winning_percentage','desc')->get();
+        $all = User::orderBy('winning_percentage', 'desc')->get();
 
-        return response(['rank' => new UserCollection(User::all())
+        return response(['rank' => $all
         , 'message' => "Successful access!"], 200 );
 
     }
@@ -223,9 +222,10 @@ class UserController extends Controller
 
     public function rank_loser()
     {
-        User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
+     
+        $loser = User::where('total_games', '!=', null)->orderBy('winning_percentage', 'asc')->get()->first();
 
-        return response(['loserUsers' => new UserCollection(User::all())
+        return response(['loser_users' => new UserResource($loser)
         , 'message' => "Successful access!"], 200 );
 
     }
@@ -237,9 +237,9 @@ class UserController extends Controller
     public function rank_winner()
     {
 
-        User::orderBy('winning_percentage', 'desc')->get()->first();
+        $winner = User::orderBy('winning_percentage', 'desc')->get()->first();
 
-        return response(['winningUsers' => new UserCollection(User::all())
+        return response(['winning_users' => new UserResource($winner)
                 , 'message' => "Successful access!"]
             , 200 );
 
